@@ -1,29 +1,37 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Arrays;
-import java.util.Scanner;
+import java.util.StringTokenizer;
 
 public class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int n = sc.nextInt();
-        int m = sc.nextInt();
-        int[] arr = new int[n];
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        int n = Integer.parseInt(br.readLine());
+        int m = Integer.parseInt(br.readLine());
+
+        int arr[] = new int[n];
+        int startIdx = 0, endIdx = n - 1;
+
+        StringTokenizer st = new StringTokenizer(br.readLine());
         for (int i = 0; i < n; i++) {
-            arr[i] = sc.nextInt();
+            arr[i] = Integer.parseInt(st.nextToken());
         }
+
         Arrays.sort(arr);
 
-        int startIdx = 0;
-        int endIdx = n - 1;
-        int answer = 0;
-        while (startIdx != endIdx) {
+        int count = 0;
+        while (startIdx < endIdx) {
             int sum = arr[startIdx] + arr[endIdx];
             if (sum > m) endIdx--;
             else if (sum < m) startIdx++;
             else {
-                endIdx--;
-                answer++;
+                count++;
+                startIdx++;
             }
         }
-        System.out.println(answer);
+
+        System.out.println(count);
     }
 }
