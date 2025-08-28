@@ -1,22 +1,28 @@
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int n = sc.nextInt();
-        int start = 1;
-        int end = 1;
-        int answer = 1;
-        while (end != n) {
-            int sum = 0;
-            sum = (end * (end + 1) - start * (start - 1)) / 2;
-            if (sum < n) end++;
-            else if (sum > n) start++;
-            else {
-                end++;
-                answer++;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int n = Integer.parseInt(br.readLine());
+
+        int sum = 1, count = 1;
+        int startIdx = 1, endIdx = 1;
+
+        while (endIdx != n) {
+            if (sum > n) {
+                sum -= startIdx;
+                startIdx++;
+            } else if (sum < n) {
+                endIdx++;
+                sum += endIdx;
+            } else {
+                count++;
+                endIdx++;
+                sum += endIdx;
             }
         }
-        System.out.println(answer);
+        System.out.println(count);
     }
 }
