@@ -4,72 +4,77 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class Main {
-    static int[] curState = new int[4];
-    static int[] checkDna = new int[4];
-    static int checkSecret;
+    static int checkArr[];
+    static int myArr[];
+    static int checkResult;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
+
         int s = Integer.parseInt(st.nextToken());
         int p = Integer.parseInt(st.nextToken());
 
-        st = new StringTokenizer(br.readLine());
-        String dna = st.nextToken();
-
+        char dna[] = br.readLine().toCharArray();
 
         st = new StringTokenizer(br.readLine());
+
+        checkArr = new int[4];
+        myArr = new int[4];
+
         for (int i = 0; i < 4; i++) {
-            checkDna[i] = Integer.parseInt(st.nextToken());
-            if (checkDna[i] == 0) checkSecret++;
-        }
-        for (int j = 0; j < p; j++) {
-            char c = dna.charAt(j);
-            add(c);
+            checkArr[i] = Integer.parseInt(st.nextToken());
+            if (checkArr[i] == 0) checkResult++;
         }
 
-        int answer = 0;
-        if (checkSecret == 4) answer++;
+        for (int i = 0; i < p; i++) {
+            add(dna[i]);
+        }
+
+        int result = 0;
+
+        if (checkResult == 4) {
+            result++;
+        }
 
         for (int i = p; i < s; i++) {
-            int prevIdx = i - p;
-            int nextIdx = i;
-            remove(dna.charAt(prevIdx));
-            add(dna.charAt(nextIdx));
-            if (checkSecret == 4) answer++;
+            int j = i - p;
+            add(dna[i]);
+            remove(dna[j]);
+            if (checkResult == 4) result++;
         }
-        System.out.println(answer);
+        System.out.print(result);
     }
 
-    static public void add(char c) {
+    public static void add(char c) {
         if (c == 'A') {
-            curState[0]++;
-            if (curState[0] == checkDna[0]) checkSecret++;
+            myArr[0]++;
+            if (myArr[0] == checkArr[0]) checkResult++;
         } else if (c == 'C') {
-            curState[1]++;
-            if (curState[1] == checkDna[1]) checkSecret++;
+            myArr[1]++;
+            if (myArr[1] == checkArr[1]) checkResult++;
         } else if (c == 'G') {
-            curState[2]++;
-            if (curState[2] == checkDna[2]) checkSecret++;
+            myArr[2]++;
+            if (myArr[2] == checkArr[2]) checkResult++;
         } else if (c == 'T') {
-            curState[3]++;
-            if (curState[3] == checkDna[3]) checkSecret++;
+            myArr[3]++;
+            if (myArr[3] == checkArr[3]) checkResult++;
         }
     }
 
-    static public void remove(char c) {
+    public static void remove(char c) {
         if (c == 'A') {
-            if (curState[0] == checkDna[0]) checkSecret--;
-            curState[0]--;
+            if (myArr[0] == checkArr[0]) checkResult--;
+            myArr[0]--;
         } else if (c == 'C') {
-            if (curState[1] == checkDna[1]) checkSecret--;
-            curState[1]--;
+            if (myArr[1] == checkArr[1]) checkResult--;
+            myArr[1]--;
         } else if (c == 'G') {
-            if (curState[2] == checkDna[2]) checkSecret--;
-            curState[2]--;
+            if (myArr[2] == checkArr[2]) checkResult--;
+            myArr[2]--;
         } else if (c == 'T') {
-            if (curState[3] == checkDna[3]) checkSecret--;
-            curState[3]--;
+            if (myArr[3] == checkArr[3]) checkResult--;
+            myArr[3]--;
         }
     }
 }
