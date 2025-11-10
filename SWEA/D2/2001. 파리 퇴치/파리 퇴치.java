@@ -14,29 +14,32 @@ public class Solution {
 			int N = Integer.parseInt(st.nextToken());
 			int M = Integer.parseInt(st.nextToken());
 
-			int[][] arr = new int[N][N];
-			for (int i = 0; i < N; i++) {
+			int[][] arr = new int[N + 1][N + 1];
+			for (int i = 1; i <= N; i++) {
 				st = new StringTokenizer(br.readLine());
-				for (int j = 0; j < N; j++) {
+				for (int j = 1; j <= N; j++) {
 					arr[i][j] = Integer.parseInt(st.nextToken());
 				}
 			}
 
+			int[][] pSum = new int[N + 1][N + 1];
+
+			for (int row = 1; row <= N; row++) {
+				for (int col = 1; col <= N; col++) {
+					pSum[row][col] = arr[row][col] + pSum[row - 1][col] + pSum[row][col - 1] - pSum[row - 1][col - 1];
+
+				}
+			}
 			int maxSum = 0;
-			for (int i = 0; i <= (N - M); i++) {
-				for (int j = 0; j <= (N - M); j++) {
-					int sum = 0;
-					for (int mRow = 0; mRow < M; mRow++) {
-						for (int mCol = 0; mCol < M; mCol++) {							
-							sum += arr[i + mRow][j + mCol];
-						}
-					}
+			for (int i = M; i <= N; i++) {
+				for (int j = M; j <= N; j++) {
+					int sum = pSum[i][j] - pSum[i][j - M] - pSum[i - M][j] + pSum[i - M][j - M];
 					maxSum = Math.max(maxSum, sum);
 				}
 			}
 
 			sb.append("#").append(test_case).append(" ").append(maxSum).append("\n");
 		}
-		System.out.print(sb.toString());
+		System.out.print(sb);
 	}
 }
