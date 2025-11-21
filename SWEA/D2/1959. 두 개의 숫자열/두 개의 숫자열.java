@@ -27,28 +27,25 @@ public class Solution {
 				arr2[i] = Integer.parseInt(st.nextToken());
 			}
 
-			int start = 0;
-			int end = Math.min(arr1.length, arr2.length) - 1;
-			int maxLength = Math.max(arr1.length, arr2.length);
-			int minLength = Math.min(arr1.length, arr2.length);
-			int maxValue = 0;
-			while (end < maxLength) {
-				int sum = 0;
-				int startIdx = start;
-				for (int i = 0; i < minLength; i++) {
-					if (maxLength == arr1.length) {
-						sum += arr1[startIdx++] * arr2[i];
-					} else {
-						sum += arr1[i] * arr2[startIdx++];
-					}
-
-				}
-				maxValue = Math.max(sum, maxValue);
-				start++;
-				end++;
+			int[] shortArr, longArr;
+			if (N > M) {
+				longArr = arr1;
+				shortArr = arr2;
+			} else {
+				longArr = arr2;
+				shortArr = arr1;
 			}
 
-			sb.append("#").append(test_case).append(" ").append(maxValue).append("\n");
+			int maxSum = 0;
+			for (int shift = 0; shift <= longArr.length - shortArr.length; shift++) {
+				int sum = 0;
+				for (int i = 0; i < shortArr.length; i++) {
+					sum += shortArr[i] * longArr[i + shift];
+				}
+				maxSum = Math.max(maxSum, sum);
+			}
+
+			sb.append("#").append(test_case).append(" ").append(maxSum).append("\n");
 		}
 		System.out.println(sb);
 	}
