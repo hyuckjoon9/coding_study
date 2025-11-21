@@ -13,44 +13,35 @@ public class Solution {
 
 			int[][] arr = new int[N][N];
 			int num = 1;
-			int row = 0;
-			int col = 0;
-			int rowBlock = 0;
-			int colBlock = 0;
+			int r = 0;
+			int c = 0;
 
-			while (num <= (N * N)) {
-				for (int i = col; i < N - colBlock; i++) {
-					arr[row][i] = num++;
-					col = i;
-				}
-				row++;
-				for (int i = row; i < N - rowBlock; i++) {
-					arr[i][col] = num++;
-					row = i;
-				}
-				col--;
-				for (int i = col; i >= colBlock; i--) {
-					arr[row][i] = num++;
-					col = i;
-				}
-				row--;
-				for (int i = row; i > rowBlock; i--) {
-					arr[i][col] = num++;
-					row = i;
-				}
-				col++;
+			int dir = 0;
+			int[] dr = { 0, 1, 0, -1 };
+			int[] dc = { 1, 0, -1, 0 };
+			for (int i = 0; i < N * N; i++) {
+				arr[r][c] = num++;
 
-				colBlock++;
-				rowBlock++;
+				int nr = r + dr[dir];
+				int nc = c + dc[dir];
 
+				if (nr < 0 || nr >= N || nc < 0 || nc >= N || arr[nr][nc] != 0) {
+					dir = (dir + 1) % 4;
+					nr = r + dr[dir];
+					nc = c + dc[dir];
+				}
+
+				r = nr;
+				c = nc;
 			}
 
 			sb.append("#").append(test_case).append("\n");
-			for (int[] vArr : arr) {
-				for (int v : vArr) {
-					sb.append(v);
-					if (v != vArr[vArr.length - 1])
+			for (int i = 0; i < N; i++) {
+				for (int j = 0; j < N; j++) {
+					sb.append(arr[i][j]);
+					if (j != N - 1) {
 						sb.append(" ");
+					}
 				}
 				sb.append("\n");
 			}
