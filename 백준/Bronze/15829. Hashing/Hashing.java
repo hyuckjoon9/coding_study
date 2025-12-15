@@ -9,20 +9,18 @@ public class Main {
         String str = br.readLine();
 
         int[] arr = new int[L];
-        int MOD = 1234567891;
+        int MOD = 1_234_567_891;
 
         for (int i = 0; i < L; i++) {
             arr[i] = str.charAt(i) - 'a' + 1;
         }
 
-
-        int ratioCnt = 0;
-        int sum = 0;
+        long sum = 0;
+        long r = 1;
         for (int i = 0; i < L; i++) {
-            sum += arr[i] * (int) Math.pow(31, ratioCnt++);
+            sum = (sum + (arr[i] * r)) % MOD;
+            r = (r * 31) % MOD;
         }
-        System.out.println(sum % MOD);
+        System.out.println(sum);
     }
-
-
 }
