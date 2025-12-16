@@ -3,38 +3,32 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         int N = Integer.parseInt(br.readLine());
-
-        ArrayList<ArrayList<String>> strings = new ArrayList<>();
-        for (int i = 0; i <= 50; i++) {
-            strings.add(new ArrayList<>());
-        }
+        List<String> words = new ArrayList<>();
         for (int i = 0; i < N; i++) {
             String word = br.readLine();
-
-            int wordCnt = strings.get(word.length()).size();
-            strings.get(word.length()).add(word);
+            words.add(word);
         }
 
+        Collections.sort(words, (a, b) -> {
+            if (a.length() != b.length()) {
+                return a.length() - b.length();
+            }
+            return a.compareTo(b);
+        });
 
         StringBuilder sb = new StringBuilder();
-        for (int i = 1; i < strings.size(); i++) {
-            if (strings.get(i).size() == 0) {
-                continue;
-            }
-            Collections.sort(strings.get(i));
-
-            String prevStr = "";
-            for (String str : strings.get(i)) {
-                if (prevStr.equals(str)) continue;
-                sb.append(str).append("\n");
-                prevStr = str;
-            }
+        String prevWord = "";
+        for (String word : words) {
+            if (prevWord.equals(word)) continue;
+            sb.append(word).append("\n");
+            prevWord = word;
         }
         System.out.println(sb);
     }
