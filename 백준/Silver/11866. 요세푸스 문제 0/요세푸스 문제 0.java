@@ -1,8 +1,8 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -12,28 +12,27 @@ public class Main {
         int N = Integer.parseInt(st.nextToken());
         int K = Integer.parseInt(st.nextToken());
 
-        Map<Integer, Integer> m = new HashMap<>();
+        Deque<Integer> dq = new ArrayDeque<Integer>();
+
         for (int i = 1; i <= N; i++) {
-            m.put(i, 0);
+            dq.addLast(i);
         }
 
         StringBuilder sb = new StringBuilder();
         sb.append('<');
-        int targetIdx = 0;
-        for (int i = 1; i <= N; i++) {
-            for (int j = 0; j < K; j++) {
-                targetIdx++;
-                if (targetIdx == N + 1) targetIdx = 1;
-                while (m.getOrDefault(targetIdx, 0) != 0) {
-                    targetIdx++;
-                    if (targetIdx == N + 1) targetIdx = 1;
-                }
+        for (int i = 0; i < N; i++) {
+            for (int j = 1; j < K; j++) {
+                int num = dq.pollFirst();
+                dq.addLast(num);
             }
-            m.put(targetIdx, 1);
-            sb.append(targetIdx);
-            if (i != N) sb.append(',').append(' ');
+            int out = dq.pollFirst();
+            sb.append(out);
+            if (i != N - 1) {
+                sb.append(", ");
+            }
         }
         sb.append('>');
         System.out.println(sb);
+
     }
 }
