@@ -1,49 +1,56 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.StringTokenizer;
 
 public class Main {
-    static int n;
+    static int[][] graph;
     static boolean[] visited;
-    static ArrayList<Integer>[] g;
-    static int cnt;
+    static int computers;
+
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        n = Integer.parseInt(br.readLine());
 
-        g = new ArrayList[n + 1];
-        visited = new boolean[n + 1];
+        computers = Integer.parseInt(br.readLine());
+        int edges = Integer.parseInt(br.readLine());
 
-        for (int i = 1; i <= n; i++) {
-            g[i] = new ArrayList<>();
-        }
+        graph = new int[computers + 1][computers + 1];
+        visited = new boolean[computers + 1];
 
-        int m = Integer.parseInt(br.readLine());
-        StringTokenizer st;
-        for (int i = 0; i < m; i++) {
-            st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < edges; i++) {
+            StringTokenizer st = new StringTokenizer(br.readLine());
             int u = Integer.parseInt(st.nextToken());
             int v = Integer.parseInt(st.nextToken());
 
-            g[u].add(v);
-            g[v].add(u);
+            graph[u][v] = 1;
+            graph[v][u] = 1;
         }
-        dfs(1);
-        System.out.println(cnt);
+
+        bfs(1);
     }
 
-    static void dfs(int node) {
-        if (visited[node]) return;
+    public static void bfs(int v) {
+        Deque<Integer> dq = new ArrayDeque<>();
+        dq.addLast(v);
 
-        visited[node] = true;
-        for (int next : g[node]) {
-            if (!visited[next]) {
-                cnt++;
-                dfs(next);
+        int count = 0;
+        while (!dq.isEmpty()) {
+            int cur = dq.pollFirst();
+
+            if (visited[cur]) continue;
+            count++;
+            visited[cur] = true;
+
+            for (int i = 1; i <= computers; i++) {
+                if (visited[i]) continue;
+                if (graph[cur][i] != 1) continue;
+
+                dq.addLast(i);
             }
         }
+        System.out.println(count - 1);
     }
 }
