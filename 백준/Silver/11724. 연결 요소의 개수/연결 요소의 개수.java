@@ -1,54 +1,60 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.StringTokenizer;
 
 public class Main {
-    static ArrayList<Integer>[] g;
+    static int[][] graph;
     static boolean[] visited;
+    static int N;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        int n = Integer.parseInt(st.nextToken());
-        int m = Integer.parseInt(st.nextToken());
+        N = Integer.parseInt(st.nextToken());
+        int M = Integer.parseInt(st.nextToken());
 
-        g = new ArrayList[n + 1];
-        visited = new boolean[n + 1];
+        graph = new int[N + 1][N + 1];
+        visited = new boolean[N + 1];
 
-        for (int i = 1; i < n + 1; i++) {
-            g[i] = new ArrayList<>();
-        }
-
-
-        for (int i = 0; i < m; i++) {
+        for (int i = 0; i < M; i++) {
             st = new StringTokenizer(br.readLine());
-
             int u = Integer.parseInt(st.nextToken());
             int v = Integer.parseInt(st.nextToken());
 
-            g[u].add(v);
-            g[v].add(u);
+            graph[u][v] = 1;
+            graph[v][u] = 1;
         }
 
-        int cnt = 0;
-        for (int i = 1; i < n + 1; i++) {
+        int answer = 0;
+        for (int i = 1; i <= N; i++) {
             if (!visited[i]) {
-                cnt++;
-                dfs(i);
+                bfs(i);
+                answer++;
             }
         }
-        System.out.println(cnt);
+        System.out.println(answer);
     }
 
-    static void dfs(int node) {
-        if (visited[node]) return;
+    public static void bfs(int x) {
+        Deque<Integer> dq = new ArrayDeque<>();
+        dq.addLast(x);
 
-        visited[node] = true;
-        for (int i : g[node]) {
-            if (!visited[i]) dfs(i);
+        while (!dq.isEmpty()) {
+            int cur = dq.pollFirst();
+
+            if (visited[cur]) continue;
+
+            visited[cur] = true;
+
+            for (int i = 1; i <= N; i++) {
+                if (visited[i]) continue;
+                if (graph[cur][i] != 1) continue;
+                dq.addLast(i);
+            }
         }
     }
 }
