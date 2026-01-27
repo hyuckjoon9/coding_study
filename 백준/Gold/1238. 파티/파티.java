@@ -1,11 +1,13 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.PriorityQueue;
+import java.util.StringTokenizer;
 
 public class Main {
     static int INF = 1_000_000_000;
-    static List<Node>[] graph;
-    static int[] dist;
+
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -15,11 +17,17 @@ public class Main {
         int M = Integer.parseInt(st.nextToken());
         int X = Integer.parseInt(st.nextToken());
 
-        graph = new ArrayList[N + 1];
-        dist = new int[N + 1];
+        List<Node>[] graph = new ArrayList[N + 1];
+        List<Node>[] reverse = new ArrayList[N + 1];
+        int[] distFromX = new int[N + 1];
+        int[] distToX = new int[N + 1];
+
+
         for (int i = 1; i <= N; i++) {
             graph[i] = new ArrayList<>();
-            dist[i] = INF;
+            reverse[i] = new ArrayList<>();
+            distFromX[i] = INF;
+            distToX[i] = INF;
         }
 
         for (int i = 0; i < M; i++) {
@@ -29,33 +37,20 @@ public class Main {
             int weight = Integer.parseInt(st.nextToken());
 
             graph[from].add(new Node(to, weight));
+            reverse[to].add(new Node(from, weight));
         }
 
-        int[] maxDist = new int[N + 1];
+        dijkstra(X, distFromX, graph);
+        dijkstra(X, distToX, reverse);
+
+        int maxDist = 0;
         for (int i = 1; i <= N; i++) {
-            dijkstra(i);
-
-            if (i == X) {
-                int idx = 1;
-                while (idx <= N) {
-                    maxDist[idx] += dist[idx];
-                    idx++;
-                }
-            } else {
-                maxDist[i] += dist[X];
-            }
-
-            Arrays.fill(dist, INF);
+            maxDist = Math.max(distFromX[i] + distToX[i], maxDist);
         }
-
-        int answer = 0;
-        for (int v : maxDist) {
-            answer = Math.max(v, answer);
-        }
-        System.out.println(answer);
+        System.out.println(maxDist);
     }
 
-    static void dijkstra(int start) {
+    static void dijkstra(int start, int[] dist, List<Node>[] graph) {
         PriorityQueue<State> pq = new PriorityQueue<>();
         dist[start] = 0;
         pq.add(new State(start, 0));
