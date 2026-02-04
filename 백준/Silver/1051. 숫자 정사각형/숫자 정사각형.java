@@ -39,21 +39,25 @@ public class Main {
             }
         }
 
-        int side = Math.min(n, m);
+        int maxLen = Math.min(n, m);
 
-        while (side >= 1) {
+        for (int len = maxLen; len >= 1; len--) {
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < m; j++) {
-                    if (j + side - 1 >= m || j + side - 1 < 0) continue;
-                    if (i + side - 1 >= n || i + side - 1 < 0) continue;
+                    if (j + len - 1 >= m) continue;
+                    if (i + len - 1 >= n) continue;
 
-                    if (board[i][j] == board[i][j + side - 1] && board[i][j] == board[i + side - 1][j] && board[i][j] == board[i + side - 1][j + side - 1]) {
-                        System.out.println(side * side);
+                    int a = board[i][j];
+                    int b = board[i][j + len - 1];
+                    int c = board[i + len - 1][j];
+                    int d = board[i + len - 1][j + len - 1];
+
+                    if (a == b && a == c && a == d) {
+                        System.out.println(len * len);
                         return;
                     }
                 }
             }
-            side--;
         }
 
 
