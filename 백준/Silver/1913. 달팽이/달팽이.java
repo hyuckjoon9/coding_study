@@ -5,60 +5,47 @@ import java.io.InputStreamReader;
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
         int N = Integer.parseInt(br.readLine());
         int find = Integer.parseInt(br.readLine());
 
         int[][] board = new int[N + 1][N + 1];
 
-        int n = (N - 1) / 2;
-        Coordinate one = new Coordinate(n + 1, n + 1);
-        Coordinate findC = new Coordinate(0, 0);
+        int x = N / 2 + 1;
+        int y = N / 2 + 1;
+        board[x][y] = 1;
 
-        board[one.x][one.y] = 1;
-        Coordinate prev = new Coordinate(one.x, one.y);
-        int num = 2;
+        int[] dx = {-1, 0, 1, 0};
+        int[] dy = {0, 1, 0, -1};
 
-        for (int i = 0; i < n; i++) {
-            prev.x = prev.x - 1;
-            for (int j = 0; j < 4; j++) {
-                if (j == 1) prev.x = prev.x + 1;
-                else if (j == 2) prev.y = prev.y - 1;
-                else if (j == 3) prev.x = prev.x - 1;
+        int move = 1;
+        int dir = 0;
 
-                for (int k = 0; k < (2 * i + 2); k++) {
-                    if (j == 0) {
-                        if (k != 0) prev.y = prev.y + 1;
-                        if (find == num) {
-                            findC.x = prev.x;
-                            findC.y = prev.y;
-                        }
-                        board[prev.x][prev.y] = num++;
-                    } else if (j == 1) {
-                        if (k != 0) prev.x = prev.x + 1;
-                        if (find == num) {
-                            findC.x = prev.x;
-                            findC.y = prev.y;
-                        }
-                        board[prev.x][prev.y] = num++;
+        int fx = x;
+        int fy = y;
 
-                    } else if (j == 2) {
-                        if (k != 0) prev.y = prev.y - 1;
-                        if (find == num) {
-                            findC.x = prev.x;
-                            findC.y = prev.y;
-                        }
-                        board[prev.x][prev.y] = num++;
-                    } else {
-                        if (k != 0) prev.x = prev.x - 1;
-                        if (find == num) {
-                            findC.x = prev.x;
-                            findC.y = prev.y;
-                        }
-                        board[prev.x][prev.y] = num++;
+        int num = 1;
+
+        while (num < N * N) {
+            for (int i = 0; i < 2; i++) {
+                for (int j = 0; j < move; j++) {
+                    if (num == N * N) break;
+
+                    x = x + dx[dir];
+                    y = y + dy[dir];
+
+                    board[x][y] = ++num;
+
+                    if (num == find) {
+                        fx = x;
+                        fy = y;
                     }
                 }
+                dir = (dir + 1) % 4;
             }
+            move++;
         }
+
         StringBuilder sb = new StringBuilder();
         for (int i = 1; i <= N; i++) {
             for (int j = 1; j <= N; j++) {
@@ -66,20 +53,7 @@ public class Main {
             }
             sb.append("\n");
         }
-        if (find == 1) sb.append(n + 1).append(" ").append(n + 1);
-        else sb.append(findC.x).append(" ").append(findC.y);
+        sb.append(fx).append(" ").append(fy);
         System.out.println(sb);
-
-    }
-
-
-    public static class Coordinate {
-        int x;
-        int y;
-
-        Coordinate(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
     }
 }
