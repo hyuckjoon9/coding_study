@@ -13,19 +13,18 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
         StringTokenizer st = new StringTokenizer(br.readLine());
 
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
-
-        board = new int[N][M];
 
         st = new StringTokenizer(br.readLine());
         int r = Integer.parseInt(st.nextToken());
         int c = Integer.parseInt(st.nextToken());
         int d = Integer.parseInt(st.nextToken());
 
-        // 0은 청소해야 됨. 1은 벽이 있음. 2는 청소 됨.
+        board = new int[N][M];
         for (int i = 0; i < N; i++) {
             st = new StringTokenizer(br.readLine());
             for (int j = 0; j < M; j++) {
@@ -33,68 +32,53 @@ public class Main {
             }
         }
 
-        int countCleaning = 0;
-
+        int cleaningCount = 0;
         while (true) {
-            if (checkCurrent(r, c)) {
-                if (checkAround(r, c)) {
-                    if (checkBackOneStep(r, c, d)) {
-                        int moveD = (d + 2) % 4;
-                        int nr = r + dx[moveD];
-                        int nc = c + dy[moveD];
+            if (board[r][c] != 2) cleaningCount++;
+            board[r][c] = 2;
 
-                        r = nr;
-                        c = nc;
-                    } else {
-                        break;
-                    }
-                } else {
-                    d = getDirtyDirect(r, c, d);
+            if (dirtyAround(r, c, d)) {
+                for (int i = 0; i < 4; i++) {
+                    d = (d + 3) % 4;
+
                     int nr = r + dx[d];
                     int nc = c + dy[d];
 
-                    r = nr;
-                    c = nc;
+                    if (nr < 0 || nr > N - 1 || nc < 0 || nc > M - 1) continue;
+
+                    if (board[nr][nc] == 0) {
+                        r = nr;
+                        c = nc;
+                        break;
+                    }
                 }
             } else {
-                board[r][c] = 2;
-                countCleaning++;
+                int nd = (d + 2) % 4;
+
+                int nr = r + dx[nd];
+                int nc = c + dy[nd];
+
+                if (nr < 0 || nr > N - 1 || nc < 0 || nc > M - 1 || board[nr][nc] == 1) {
+                    break;
+                }
+                r = nr;
+                c = nc;
             }
         }
-
-        System.out.println(countCleaning);
+        System.out.println(cleaningCount);
     }
 
-
-    public static boolean checkAround(int r, int c) {
-        return (c + 1 > M - 1 || board[r][c + 1] != 0) &&
-                (c - 1 < 0 || board[r][c - 1] != 0) &&
-                (r - 1 < 0 || board[r - 1][c] != 0) &&
-                (r + 1 > N - 1 || board[r + 1][c] != 0);
-    }
-
-    public static boolean checkCurrent(int r, int c) {
-        return board[r][c] == 2;
-    }
-
-    public static boolean checkBackOneStep(int r, int c, int d) {
-        d = (d + 2) % 4;
-        int nr = r + dx[d];
-        int nc = c + dy[d];
-        return (0 <= nr) && (nr <= (N - 1)) && (0 <= nc) && (nc <= (M - 1)) && (board[nr][nc] != 1);
-    }
-
-    public static int getDirtyDirect(int r, int c, int d) {
-        int rotateCount = 0;
-        while (++rotateCount <= 4) {
-            d = (d + 3) % 4;
+    public static boolean dirtyAround(int r, int c, int d) {
+        for (int i = 0; i < 4; i++) {
             int nr = r + dx[d];
             int nc = c + dy[d];
 
-            if (nr < 0 || nc < 0 || nr >= N || nc >= M || board[nr][nc] != 0) continue;
+            d = (d + 3) % 4;
 
-            break;
+            if (nr < 0 || nr > N - 1 || nc < 0 || nc > M - 1) continue;
+            if (board[nr][nc] == 0) return true;
         }
-        return d;
+        return false;
     }
+
 }
