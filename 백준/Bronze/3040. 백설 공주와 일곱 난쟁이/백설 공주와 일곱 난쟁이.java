@@ -20,31 +20,30 @@ public class Main {
 			input[i] = Integer.parseInt(br.readLine());
 		}
 
-		combi(0, 0);
-
-		StringBuilder sb = new StringBuilder();
+		combi(0, 0, 0);
 
 	}
 
-	public static void combi(int depth, int start) {
+	public static boolean combi(int depth, int start, int sum) {
 		if (depth == r) {
-			int sum = 0;
-			for (int v : numbers) {
-				sum += v;
-			}
-
 			if (sum == 100) {
 				for (int v : numbers) {
 					System.out.println(v);
 				}
+				return true;
 			}
-			return;
+
+			return false;
 		}
 
 		for (int i = start; i < n; i++) {
 			numbers[depth] = input[i];
-			combi(depth + 1, i + 1);
+			if (combi(depth + 1, i + 1, sum + numbers[depth])) {
+				return true;
+			}
 		}
+
+		return false;
 	}
 
 }
