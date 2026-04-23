@@ -4,73 +4,58 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class Main {
-    static int zeroCount = 0;
-    static int oneCount = 0;
-    static int N;
+	static int[][] board;
+	static int blue;
+	static int white;
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	public static void main(String args[]) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        N = Integer.parseInt(br.readLine());
-        int[][] board = new int[N][N];
+		int N = Integer.parseInt(br.readLine());
 
-        StringTokenizer st = null;
-        for (int i = 0; i < N; i++) {
-            st = new StringTokenizer(br.readLine());
-            for (int j = 0; j < N; j++) {
-                board[i][j] = Integer.parseInt(st.nextToken());
-            }
-        }
+		board = new int[N][N];
+		for (int i = 0; i < N; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			for (int j = 0; j < N; j++) {
+				board[i][j] = Integer.parseInt(st.nextToken());
+			}
+		}
 
+		tokenBoard(0, 0, N);
+		System.out.print(white + "\n" + blue);
 
-        StringBuilder sb = new StringBuilder();
-        if (isSameNum(board, 0, 0, N)) {
-            sb.append(zeroCount).append("\n").append(oneCount);
-            System.out.println(sb);
-            return;
-        }
+	}
 
-        tokenizeBoard(board, 0, 0, N);
+	public static void tokenBoard(int row, int col, int N) {
+		if (N == 0)
+			return;
+		if (checkNum(row, col, N))
+			return;
 
-        sb.append(zeroCount).append("\n").append(oneCount);
-        System.out.println(sb);
+		tokenBoard(row, col, N / 2);
+		tokenBoard(row, col + N / 2, N / 2);
+		tokenBoard(row + N / 2, col, N / 2);
+		tokenBoard(row + N / 2, col + N / 2, N / 2);
+	}
 
-    }
+	public static boolean checkNum(int row, int col, int N) {
+		int sum = 0;
+		for (int i = row; i < row + N; i++) {
+			for (int j = col; j < col + N; j++) {
+				sum += board[i][j];
+			}
+		}
 
-    static void tokenizeBoard(int[][] board, int startRow, int startCol, int length) {
-        if (length <= 0) return;
-        if (isSameNum(board, startRow, startCol, length)) return;
+		if (sum == N * N) {
+			blue++;
+			return true;
+		} else if (sum == 0) {
+			white++;
+			return true;
+		}
 
-        tokenizeBoard(board, startRow, startCol, length / 2);
-        tokenizeBoard(board, startRow, startCol + length / 2, length / 2);
-        tokenizeBoard(board, startRow + length / 2, startCol, length / 2);
-        tokenizeBoard(board, startRow + length / 2, startCol + length / 2, length / 2);
-    }
+		return false;
+	}
 
-    static boolean isSameNum(int[][] board, int startRow, int startCol, int length) {
-        boolean allZero = true;
-        boolean allOne = true;
-
-        int endRow = length + startRow;
-        int endCol = length + startCol;
-        for (int i = startRow; i < endRow; i++) {
-            for (int j = startCol; j < endCol; j++) {
-                if (board[i][j] == 1) {
-                    allZero = false;
-                } else if (board[i][j] == 0) {
-                    allOne = false;
-                }
-            }
-        }
-
-        if (allZero) {
-            zeroCount++;
-            return true;
-        }
-        if (allOne) {
-            oneCount++;
-            return true;
-        }
-        return false;
-    }
 }
+
