@@ -4,15 +4,11 @@ import java.util.Deque;
 public class Solution {
 	int[] dc = { -1, 1, 0, 0 };
 	int[] dr = { 0, 0, -1, 1 };
+
 	boolean[][] visited;
 	int[][] maps;
 	int n;
 	int m;
-	int sRow;
-	int sCol;
-	int eRow;
-	int eCol;
-	int answer;
 
 	public class Node {
 		int r;
@@ -30,34 +26,24 @@ public class Solution {
 		n = maps.length;
 		m = maps[0].length;
 
-		sRow = 0;
-		sCol = 0;
-		eRow = n - 1;
-		eCol = m - 1;
-
-		answer = 0;
-
 		visited = new boolean[n][m];
 		this.maps = maps;
 
-		boolean flag = bfs();
-
-		answer = flag ? answer : -1;
+		int answer = bfs();
 
 		return answer;
 	}
 
-	public boolean bfs() {
+	public int bfs() {
 		Deque<Node> dq = new ArrayDeque<>();
-		dq.addLast(new Node(sRow, sCol, 1));
-		visited[sRow][sCol] = true;
+		dq.addLast(new Node(0, 0, 1));
+		visited[0][0] = true;
 
 		while (!dq.isEmpty()) {
 			Node cur = dq.removeFirst();
 
-			if (cur.r == eRow && cur.c == eCol) {
-				answer = cur.dist;
-				return true;
+			if (cur.r == n - 1 && cur.c == m - 1) {
+				return cur.dist;
 			}
 
 			for (int i = 0; i < 4; i++) {
@@ -75,6 +61,6 @@ public class Solution {
 			}
 		}
 
-		return false;
+		return -1;
 	}
 }
