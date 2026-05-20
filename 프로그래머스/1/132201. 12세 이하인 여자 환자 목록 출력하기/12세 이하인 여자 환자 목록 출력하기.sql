@@ -1,4 +1,14 @@
-SELECT PT_NAME , PT_NO ,  GEND_CD , AGE, COALESCE(TLNO, 'NONE') AS TLNO
-FROM PATIENT
-WHERE age<=12 && GEND_CD='W'
-ORDER BY age DESC, pt_name ASC;
+SELECT
+    PT_NAME,
+    PT_NO,
+    GEND_CD,
+    AGE,
+    IFNULL(TLNO,'NONE')
+FROM 
+    PATIENT
+WHERE
+    AGE <= 12
+    AND GEND_CD = 'W'
+ORDER BY
+    AGE desc,
+    PT_NAME;
