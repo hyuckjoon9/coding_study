@@ -1,15 +1,18 @@
--- 코드를 입력하세요
-SELECT 
+select
     b.TITLE,
-    r.BOARD_ID, 
-    r.REPLY_ID, 
-    r.WRITER_ID, 
+    b.BOARD_ID,
+    r.REPLY_ID,
+    r.WRITER_ID,
     r.CONTENTS,
-    DATE_FORMAT(r.CREATED_DATE, "%Y-%m-%d") AS CREATED_DATE
-FROM USED_GOODS_REPLY r
-JOIN USED_GOODS_BOARD b
-    ON b.BOARD_ID=r.BOARD_ID
-WHERE YEAR(b.CREATED_DATE) = 2022
-    AND MONTH(b.CREATED_DATE) = 10
-ORDER BY r.CREATED_DATE ASC, b.TITLE ASC
-;
+    r.CREATED_DATE
+from
+    USED_GOODS_BOARD b
+join
+    USED_GOODS_REPLY r
+    on b.BOARD_ID = r.BOARD_ID
+where
+    b.CREATED_DATE between '2022-10-01'
+    AND '2022-10-31'
+order by
+    r.CREATED_DATE,
+    b.TITLE;
