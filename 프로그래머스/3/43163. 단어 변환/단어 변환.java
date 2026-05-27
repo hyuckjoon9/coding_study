@@ -5,106 +5,71 @@ class Solution {
 	String begin;
 	String target;
 	String[] words;
-	int answer = 0;
-	int[][] g;
+	int answer;
+	Deque<Node> dq;
 	boolean[] visited;
-	int n;
+
+	class Node {
+		String word;
+		int step;
+
+		Node(String word, int step) {
+			this.word = word;
+			this.step = step;
+		}
+	}
 
 	public int solution(String begin, String target, String[] words) {
 		this.begin = begin;
 		this.target = target;
 		this.words = words;
-		n = words.length;
-		visited = new boolean[n + 1];
+		dq = new ArrayDeque<>();
+		visited = new boolean[words.length];
 
-		boolean hasSame = false;
 		for (int i = 0; i < words.length; i++) {
-			if (words[i].equals(target)) {
-				hasSame = true;
-				break;
+			int diffCnt = getDiff(begin, words[i]);
+			if (diffCnt == 1) {
+				dq.addLast(new Node(words[i], 1));
+				visited[i] = true;
 			}
 		}
 
-		if (!hasSame) {
+		if (dq.isEmpty())
 			return 0;
-		}
-
-		g = new int[n + 1][n + 1];
-
-		for (int i = 0; i <= n; i++) {
-			for (int j = 0; j <= n; j++) {
-				if (i == j)
-					continue;
-
-				if (i == 0) {
-					int cnt = 0;
-					for (int k = 0; k < begin.length(); k++) {
-						if (begin.charAt(k) != words[j - 1].charAt(k)) {
-							cnt++;
-						}
-					}
-
-					if (cnt == 1) {
-						g[i][j] = 1;
-						g[j][i] = 1;
-					}
-				} else if (j == 0) {
-					int cnt = 0;
-					for (int k = 0; k < begin.length(); k++) {
-						if (begin.charAt(k) != words[i - 1].charAt(k)) {
-							cnt++;
-						}
-					}
-
-					if (cnt == 1) {
-						g[i][j] = 1;
-						g[j][i] = 1;
-					}
-				} else {
-					int cnt = 0;
-					for (int k = 0; k < words[j - 1].length(); k++) {
-						if (words[i - 1].charAt(k) != words[j - 1].charAt(k)) {
-							cnt++;
-						}
-					}
-
-					if (cnt == 1) {
-						g[i][j] = 1;
-						g[j][i] = 1;
-					}
-				}
-			}
-		}
-
-		bfs();
+		answer = 0;
+		check();
 		return answer;
 	}
 
-	public void bfs() {
-		Deque<int[]> dq = new ArrayDeque<>();
-		dq.addLast(new int[] { 0, 0 });
-
+	public void check() {
 		while (!dq.isEmpty()) {
-			int[] cur = dq.removeFirst();
+			Node cur = dq.removeFirst();
 
-			if (visited[cur[0]])
-				continue;
-
-			if (cur[0] != 0 && words[cur[0] - 1].equals(target)) {
-				answer = cur[1];
-				return;
+			if (cur.word.equals(target)) {
+				answer = cur.step;
 			}
 
-			visited[cur[0]] = true;
-			for (int i = 0; i <= n; i++) {
-				if (g[cur[0]][i] != 1)
-					continue;
+			for (int i = 0; i < words.length; i++) {
 				if (visited[i])
 					continue;
-
-				dq.addLast(new int[] { i, cur[1] + 1 });
-
+				int diffCnt = getDiff(words[i], cur.word);
+				if (diffCnt == 1) {
+					visited[i] = true;
+					dq.addLast(new Node(words[i], cur.step + 1));
+				}
 			}
+
 		}
+	}
+
+	public int getDiff(String a, String b) {
+		int diffCnt = 0;
+
+		for (int i = 0; i < a.length(); i++) {
+			if (a.charAt(i) != b.charAt(i))
+				diffCnt++;
+		}
+
+		return diffCnt;
 	}
 }
