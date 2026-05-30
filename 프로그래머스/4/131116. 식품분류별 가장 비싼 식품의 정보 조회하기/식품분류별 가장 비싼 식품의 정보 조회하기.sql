@@ -1,23 +1,23 @@
 select
-    f.CATEGORY,
-    f.PRICE,
-    f.PRODUCT_NAME
+    CATEGORY,
+    PRICE,
+    PRODUCT_NAME
 from
-    FOOD_PRODUCT f
-join
-    (
+    FOOD_PRODUCT
+where
+    (CATEGORY, PRICE) in (
         select
             CATEGORY,
-            max(PRICE) as 'MAX_PRICE'
+            max(PRICE)
         from
             FOOD_PRODUCT
+        where
+            CATEGORY in ('과자', '국','김치','식용유')
         group by
             CATEGORY
-    ) t
-    on f.CATEGORY=t.CATEGORY
-    and f.PRICE=t.MAX_PRICE
-where
-    f.CATEGORY in ('과자', '국', '김치', '식용유')
+        )
+
 order by
-    f.PRICE desc
+    PRICE desc
 ;
+
