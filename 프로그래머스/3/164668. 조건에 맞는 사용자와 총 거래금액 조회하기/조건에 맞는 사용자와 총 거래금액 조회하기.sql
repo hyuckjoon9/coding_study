@@ -1,18 +1,18 @@
 select
-    b.USER_ID,
-    b.NICKNAME,
-    sum(a.PRICE) as `TOTAL_SALES`
+    ub.WRITER_ID as `USER_ID`,
+    uu.NICKNAME as `NICKNAME`,
+    sum(ub.PRICE) as `TOTAL_SALES`
 from
-    USED_GOODS_BOARD a
+    USED_GOODS_BOARD ub
 join
-    USED_GOODS_USER b
-    on a.WRITER_ID = b.USER_ID
+    USED_GOODS_USER uu
+    on ub.WRITER_ID = uu.USER_ID
 where
-    a.STATUS="DONE"
+    ub.STATUS = "DONE"
 group by
-    b.USER_ID,
-    b.NICKNAME
+    ub.WRITER_ID,
+    uu.NICKNAME
 having
-    sum(a.PRICE) >= 700000
+    sum(ub.PRICE) >= 700000
 order by
-    TOTAL_SALES;
+    TOTAL_SALES
