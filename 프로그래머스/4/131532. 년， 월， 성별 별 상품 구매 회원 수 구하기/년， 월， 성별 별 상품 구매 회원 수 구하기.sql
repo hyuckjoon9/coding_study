@@ -1,21 +1,21 @@
 select
-    YEAR(b.SALES_DATE) as `YEAR`,
-    MONTH(b.SALES_DATE) as `MONTH`,
-    a.GENDER as `GENDER`,
-    count(distinct a.USER_ID) as `USERS`
+    YEAR(s.SALES_DATE) as `YEAR`,
+    MONTH(s.SALES_DATE) as `MONTH`,
+    i.GENDER,
+    count(distinct i.USER_ID) as `USERS`
 from
-    USER_INFO a
+    USER_INFO i
 join
-    ONLINE_SALE b
-    on a.USER_ID = b.USER_ID
+    ONLINE_SALE s
+    on i.USER_ID = s.USER_ID
 where
-    GENDER is not null
+    i.GENDER is not null
 group by
-    YEAR(b.SALES_DATE),
-    MONTH(b.SALES_DATE),
-    a.GENDER
+    YEAR(s.SALES_DATE),
+    MONTH(s.SALES_DATE),
+    i.GENDER
 order by
-    YEAR,
-    MONTH,
-    GENDER
-;
+    YEAR(s.SALES_DATE),
+    MONTH(s.SALES_DATE),
+    i.GENDER
+    
