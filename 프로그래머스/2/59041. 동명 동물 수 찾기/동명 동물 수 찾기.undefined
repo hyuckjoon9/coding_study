@@ -1,6 +1,6 @@
 select
     NAME,
-    count(*)
+    count(*) as `COUNT`
 from
     ANIMAL_INS
 where
