@@ -1,35 +1,47 @@
-import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-public class Solution {
-	public static int[] solution(int[] prices) {
-		Deque<Integer> dq = new ArrayDeque<>();
-		dq.addLast(0);
+class Solution {
+	class Node {
+		int idx;
+		int v;
+		int cnt;
 
-		int n = prices.length;
+		Node(int idx, int v, int cnt) {
+			this.idx = idx;
+			this.v = v;
+			this.cnt = cnt;
+		}
+	}
 
-		int[] result = new int[n];
+	public int[] solution(int[] prices) {
+		int[] answer = {};
+		int len = prices.length;
+		answer = new int[len];
 
-		for (int i = 1; i < prices.length; i++) {
+		Deque<Node> dq = new ArrayDeque<>();
+		dq.addLast(new Node(0, prices[0], 0));
 
-			while (!dq.isEmpty() && prices[dq.peekLast()] > prices[i]) {
-				result[dq.removeLast()] = i;
+		for (int i = 1; i < len; i++) {
+			int size = dq.size();
+			while (size > 0) {
+				size--;
+
+				Node cur = dq.removeFirst();
+				if (cur.v <= prices[i])
+					dq.addLast(new Node(cur.idx, cur.v, cur.cnt + 1));
+				else
+					answer[cur.idx] = cur.cnt + 1;
+
 			}
-			dq.addLast(i);
+			dq.addLast(new Node(i, prices[i], 0));
 		}
 
 		while (!dq.isEmpty()) {
-			result[dq.removeLast()] = -1;
-		}
-
-		int[] answer = new int[n];
-
-		for (int i = 0; i < n; i++) {
-
-			answer[i] = result[i] == -1 ? n - i - 1 : result[i] - i;
-
+			Node cur = dq.removeFirst();
+			answer[cur.idx] = cur.cnt;
 		}
 		return answer;
 	}
 }
+
