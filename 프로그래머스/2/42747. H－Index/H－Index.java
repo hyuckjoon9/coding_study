@@ -1,28 +1,25 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Arrays;
 
 class Solution {
-	public static int solution(int[] citations) {
-		List<Integer> list = new ArrayList<>();
-
-		for (int i = 0; i < citations.length; i++) {
-			list.add(citations[i]);
-		}
-
-		Collections.sort(list, Collections.reverseOrder());
-
+	public int solution(int[] citations) {
 		int answer = 0;
+
 		int len = citations.length;
+		if (len == 1)
+			return 1;
+
+		Arrays.sort(citations);
+
+		int[] reverse = new int[len];
+		for (int i = 0; i < len; i++) {
+			reverse[i] = citations[len - i - 1];
+		}
 
 		for (int i = 0; i < len; i++) {
-
-			if (list.get(i) >= i + 1) {
-				answer = i + 1;
-
-			}
+			if (i + 1 > reverse[i])
+				return i;
+			answer = i + 1;
 		}
-
 		return answer;
 	}
 }
