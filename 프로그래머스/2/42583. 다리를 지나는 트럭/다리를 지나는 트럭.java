@@ -1,42 +1,67 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.StringTokenizer;
 
 class Solution {
 	public int solution(int bridge_length, int weight, int[] truck_weights) {
 
-		int time = 0;
-		Deque<Integer> waiting = new ArrayDeque<>();
-		Deque<Integer> moving = new ArrayDeque<>();
-		int movingWeight = 0;
 
-		for (int i = 0; i < truck_weights.length; i++) {
-			waiting.addLast(truck_weights[i]);
 
-		}
+		Deque<Integer> onBridge = new ArrayDeque<>();
 
 		for (int i = 0; i < bridge_length; i++) {
-			moving.addLast(0);
+			onBridge.addLast(0);
 		}
 
-		while (!moving.isEmpty()) {
-			movingWeight -= moving.removeFirst();
+		int firstTruck = truck_weights[0];
 
-			if (!waiting.isEmpty()) {
-				if (waiting.peekFirst() + movingWeight <= weight) {
-					moving.addLast(waiting.removeFirst());
+		onBridge.removeFirst();
+		onBridge.addLast(firstTruck);
+
+		int time = 1;
+		int truckIdx = 1;
+		int bridgeTruckWeight = firstTruck;
+		int bridgeTruckCnt = 1;
+
+		while (!onBridge.isEmpty()) {
+			if (truckIdx == truck_weights.length) break;
+
+			if (onBridge.size() == bridge_length) {
+				if (onBridge.peekFirst() != 0) {
+					int outTruck = onBridge.removeFirst();
+					bridgeTruckWeight -= outTruck;
+					bridgeTruckCnt--;
+
 				} else {
-					moving.addLast(0);
+					onBridge.removeFirst();
 				}
 			}
 
-			if (!moving.isEmpty()) {
-				movingWeight += moving.peekLast();
+			int nextTruck = truck_weights[truckIdx];
+
+			if (bridgeTruckWeight + nextTruck <= weight) {
+				if (bridgeTruckCnt + 1 <= bridge_length) {
+					onBridge.addLast(nextTruck);
+					bridgeTruckWeight += nextTruck;
+					bridgeTruckCnt++;
+					truckIdx++;
+				}
+			} else {
+				onBridge.addLast(0);
 			}
 
+			time++;
+
+		}
+
+		while (bridgeTruckCnt != 0) {
+			if (onBridge.peekFirst() != 0) {
+				int outTruck = onBridge.removeFirst();
+				bridgeTruckWeight -= outTruck;
+				bridgeTruckCnt--;
+
+			} else {
+				onBridge.removeFirst();
+			}
 			time++;
 		}
 
