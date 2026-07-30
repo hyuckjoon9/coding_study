@@ -1,32 +1,39 @@
-with skill_codes as(
+with cte_skills as(
     select
-        sum(case when CATEGORY='Front End' then `CODE` else 0 end) as frontend_code,
-        max(case when NAME = 'Python' then `CODE` end) as python_code,
-        max(case when NAME = 'C#' then `CODE` end) as csharp_code 
-    from SKILLCODES
+        sum(case
+            when s.CATEGORY = 'Front End' then `CODE` else 0
+        end) as `front`,
+    
+        max(case
+            when s.NAME='C#' then `CODE` else 0
+        end) as `csharp`,
+    
+        max(case
+            when s.NAME = 'Python' then `CODE` else 0
+        end) as `python`
+    from
+        SKILLCODES as s
 )
 
 select
-    case when (sc.frontend_code & d.SKILL_CODE) > 0
-            and (sc.python_code & d.SKILL_CODE) > 0
-                then 'A'
-        when (sc.csharp_code & d.SKILL_CODE) > 0
-                then 'B'
-        when
-            (sc.frontend_code & d.SKILL_CODE) > 0
-                then 'C'
+    case
+        when (d.SKILL_CODE & s.front and d.SKILL_CODE & s.python) > 0
+            then 'A'
+        when d.SKILL_CODE & s.csharp > 0
+            then 'B'
+        when d.SKILL_CODE & s.front > 0
+            then 'C'
     end as `GRADE`,
-    
     d.ID as `ID`,
     d.EMAIL as `EMAIL`
 from 
     DEVELOPERS d
 cross join
-    skill_codes sc
-WHERE
-       (sc.frontend_code & d.SKILL_CODE) > 0
-    OR (sc.csharp_code & d.SKILL_CODE) > 0
+    cte_skills s
+where
+    d.SKILL_CODE & s.front > 0 or
+    d.SKILL_CODE & s.csharp > 0
 order by
-    `GRADE`,
-    `ID`
+    GRADE,
+    ID
 ;
