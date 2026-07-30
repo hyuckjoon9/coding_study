@@ -1,26 +1,23 @@
 with recursive hours as(
-    select 0 as hour
+    select 0 as `HOUR`
+    
     union all
-    select hour + 1
+    
+    select HOUR+1
     from hours
-    where hour < 23
-),
-hour_counts as(
-    select
-        HOUR(DATETIME) as 'HOUR',
-        count(*) as 'COUNT'
-    from
-        ANIMAL_OUTS
-    group by
-        HOUR(DATETIME)
+    where HOUR < 23
 )
+
 select
-    h.hour as 'HOUR',
-    coalesce(hc.COUNT, 0) as 'COUNT'
+    h.HOUR as `HOUR`,
+    coalesce(count(ao.DATETIME), 0) as `COUNT`
 from
-    hours h
+    hours as h
 left join
-    hour_counts as hc
-    on h.hour = hc.HOUR
+    ANIMAL_OUTS as ao
+    on h.HOUR = HOUR(ao.DATETIME)
+group by
+    h.HOUR
 order by
-    h.hour;
+    h.HOUR
+;
