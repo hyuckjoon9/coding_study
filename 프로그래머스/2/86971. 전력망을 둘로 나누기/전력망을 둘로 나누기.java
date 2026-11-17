@@ -10,41 +10,48 @@ class Solution {
         visited = new boolean[n+1];
         graph = new boolean[n+1][n+1];
         
-        for(int i=0;i<wires.length;i++){
-            int u = wires[i][0];
-            int v = wires[i][1];
+        // 1. 그래프 생성
+        for(int[] wire : wires){
+            int u = wire[0];
+            int v = wire[1];
             
             graph[u][v]=true;
             graph[v][u]=true;
         }
         
-        for(int i=0;i<graph.length;i++){
-            for(int j=0;j<graph[i].length;j++){
-                if(graph[i][j]==true){
-                    graph[i][j]=false;
-                    graph[j][i]=false;
-                    
-                    int v1 = dfs(i);
-                    int v2 = n-v1;
-                    answer = Math.min(answer, Math.abs(v1-v2));
-                    
-                    Arrays.fill(visited,false);
-                    graph[i][j]=true;
-                    graph[j][i]=true;
-                }
-            }
+        for(int[] wire : wires){
+            // 2. 간선 끊기
+            int u = wire[0];
+            int v = wire[1];
+            
+            graph[u][v]=false;
+            graph[v][u]=false;
+            
+            // 3. 방문 배열 초기화
+            Arrays.fill(visited,false);
+            
+            // 4. 연결 노드 계산
+            int cnt = dfs(u);
+            
+            // 5. 두 전력망 차이 계산
+            int diff = Math.abs(cnt-(n-cnt));
+            answer = Math.min(answer,diff);
+            
+            // 6. 간선 복구.
+            graph[u][v]=true;
+            graph[v][u]=true;
         }
         
         return answer;
     }
     
     public int dfs(int node){
-        int cnt=0;
+        visited[node]=true;
+        int cnt=1;
         
         for(int i=0;i<graph.length;i++){
             if(!visited[i] && graph[node][i]==true){
-                visited[i]=true;
-                cnt++;
+                visited[i]=true;                
                 cnt+=dfs(i);
             }
         }
